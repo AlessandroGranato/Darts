@@ -1,3 +1,4 @@
+import 'package:darts/widgets/play_current_turn.dart';
 import 'package:darts/widgets/throw_darts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -53,14 +54,16 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Player> _playersList = [
-    Player('1', 'player1', 10),
-    Player('2', 'Player2', 20)
+    Player('1', 'player1', 10, 1),
+    Player('2', 'Player2', 20, 2)
   ];
 
-  int _playerTurn = 0;
+  int _currentTurn = 0;
 
   void addPlayerToList(Player newPlayer) {
     _playersList.add(newPlayer);
+    print(
+        'Inserted player ${newPlayer.name} with turn ${newPlayer.playerTurn}');
     _rankPlayersByPoints();
   }
 
@@ -69,7 +72,9 @@ class _MyHomePageState extends State<MyHomePage> {
         context: ctx,
         builder: (_) {
           return GestureDetector(
-            child: NewPlayer(addPlayerFunction: addPlayerToList),
+            child: NewPlayer(
+                addPlayerFunction: addPlayerToList,
+                playerTurn: _playersList.length + 1),
             onTap: () {},
             behavior: HitTestBehavior.opaque,
           );
@@ -79,11 +84,23 @@ class _MyHomePageState extends State<MyHomePage> {
   void _incrementTurn() {
     setState(() {
       if (_playersList.isEmpty) {
-        _playerTurn = 0;
+        _currentTurn = 0;
       } else {
-        _playerTurn = (_playerTurn + 1) % _playersList.length;
+        _currentTurn = (_currentTurn + 1) % _playersList.length;
       }
     });
+    print('current turn: ${_currentTurn}' );
+  }
+
+    void _decreaseTurn() {
+    setState(() {
+      if (_playersList.isEmpty) {
+        _currentTurn = 0;
+      } else {
+        _currentTurn = (_currentTurn - 1) % _playersList.length;
+      }
+    });
+    print('current turn: ${_currentTurn}' );
   }
 
   void _rankPlayersByPoints() {
@@ -93,11 +110,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _addPoints(String playerId, int points) {
-    final index = _playersList.indexWhere((element) =>
-          element.id == playerId);
+    final index = _playersList.indexWhere((element) => element.id == playerId);
     if (index >= 0) {
       _playersList[index].points += points;
       _rankPlayersByPoints();
+      _incrementTurn();
     }
   }
 
@@ -114,16 +131,35 @@ class _MyHomePageState extends State<MyHomePage> {
         });
   }
 
-    void _deletePlayer(String id) {
-    setState(() {
-      _playersList.removeWhere((player) {
-        return player.id == id;
-      });
+  void _deletePlayer(String id) {
+    final index = _playersList.indexWhere((element) => element.id == id);
+    final playerToDeleteTurn = _playersList[index].playerTurn;
+    if (index < 0) {
+      return;
+    }
+    final Player playerToDelete = _playersList[index];
+    _playersList.removeWhere((player) {
+      return player.id == id;
     });
+
+    for (Player player in _playersList) {
+      print(
+          'Before deleting ${playerToDelete.name},  Player: ${player.name} had turn: ${player.playerTurn}');
+      if (player.playerTurn > playerToDeleteTurn) {
+        player.playerTurn--;
+      }
+      print(
+          'After deleting ${playerToDelete.name},  Player: ${player.name} has turn: ${player.playerTurn}');
+    }
+    _decreaseTurn();
+    _rankPlayersByPoints();
   }
 
   @override
   Widget build(BuildContext context) {
+    for (Player player in _playersList) {
+      print('Player: ${player.name} has turn: ${player.playerTurn}');
+    }
     final mediaQuery = MediaQuery.of(context);
     final appBar = AppBar(
       title: Text(widget.title),
@@ -148,7 +184,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         appBar.preferredSize.height -
                         mediaQuery.padding.top) *
                     0.3,
-                child: Text('Player Turn'),
+                child: PlayCurrentTurn(
+                    playersList: _playersList,
+                    showThrowDartsFunction: _showThrowDarts,
+                    currentTurn: _currentTurn,
+                    incrementTurnFunction: _incrementTurn),
               ),
               Container(
                 height: (mediaQuery.size.height -

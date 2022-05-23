@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import '../models/player.dart';
 
 class NewPlayer extends StatefulWidget {
+  final int playerTurn;
   final Function addPlayerFunction;
 
-  const NewPlayer({Key? key, required this.addPlayerFunction})
+  const NewPlayer({Key? key, required this.addPlayerFunction, required this.playerTurn})
       : super(key: key);
 
   @override
@@ -22,7 +23,7 @@ class _NewPlayerState extends State<NewPlayer> {
 
     String playerName = _nameController.text;
     String id = '${playerName}-${DateTime.now().toString()}';
-    Player newPlayer = Player(id, playerName, 0);
+    Player newPlayer = Player(id, playerName, 0, widget.playerTurn);
     widget.addPlayerFunction(newPlayer);
     Navigator.of(context).pop();
   }
