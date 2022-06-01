@@ -4,9 +4,10 @@ import '../models/player.dart';
 
 class NewPlayer extends StatefulWidget {
   final int playerTurn;
+  final int startingPoints;
   final Function addPlayerFunction;
-
-  const NewPlayer({Key? key, required this.addPlayerFunction, required this.playerTurn})
+  
+  const NewPlayer({Key? key, required this.addPlayerFunction, required this.playerTurn, required this.startingPoints})
       : super(key: key);
 
   @override
@@ -23,7 +24,7 @@ class _NewPlayerState extends State<NewPlayer> {
 
     String playerName = _nameController.text;
     String id = '${playerName}-${DateTime.now().toString()}';
-    Player newPlayer = Player(id, playerName, 0, widget.playerTurn);
+    Player newPlayer = Player(id, playerName, widget.startingPoints, widget.playerTurn);
     widget.addPlayerFunction(newPlayer);
     Navigator.of(context).pop();
   }

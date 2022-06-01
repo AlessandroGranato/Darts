@@ -53,11 +53,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Player> _playersList = [
-    Player('1', 'player1', 10, 1),
-    Player('2', 'Player2', 20, 2)
-  ];
-
+  int _startingPoints = -301;
+  int _endingPoints = 0;
+  List<Player> _playersList = [];
   int _currentTurn = 0;
 
   void addPlayerToList(Player newPlayer) {
@@ -65,6 +63,11 @@ class _MyHomePageState extends State<MyHomePage> {
     print(
         'Inserted player ${newPlayer.name} with turn ${newPlayer.playerTurn}');
     _rankPlayersByPoints();
+  }
+  
+  _MyHomePageState() {
+    _playersList.add(Player('1', 'Mario', _startingPoints, 0));
+    _playersList.add(Player('2', 'Luigi', _startingPoints, 1));
   }
 
   void _showAddPlayer(BuildContext ctx) {
@@ -74,11 +77,19 @@ class _MyHomePageState extends State<MyHomePage> {
           return GestureDetector(
             child: NewPlayer(
                 addPlayerFunction: addPlayerToList,
-                playerTurn: _playersList.length + 1),
+                playerTurn: _playersList.length + 1,
+                startingPoints: _startingPoints),
             onTap: () {},
             behavior: HitTestBehavior.opaque,
           );
         });
+  }
+
+  void _printState() {
+    print('_startingPoints: ${_startingPoints}');
+    print('_endingPoints: ${_endingPoints}');
+    print('_playersList: ${_playersList}');
+    print('current turn: ${_currentTurn}');
   }
 
   void _incrementTurn() {
@@ -89,10 +100,10 @@ class _MyHomePageState extends State<MyHomePage> {
         _currentTurn = (_currentTurn + 1) % _playersList.length;
       }
     });
-    print('current turn: ${_currentTurn}' );
+    print('current turn: ${_currentTurn}');
   }
 
-    void _decreaseTurn() {
+  void _decreaseTurn() {
     setState(() {
       if (_playersList.isEmpty) {
         _currentTurn = 0;
@@ -100,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
         _currentTurn = (_currentTurn - 1) % _playersList.length;
       }
     });
-    print('current turn: ${_currentTurn}' );
+    print('current turn: ${_currentTurn}');
   }
 
   void _rankPlayersByPoints() {
@@ -109,12 +120,68 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _setNewGame() {
+    setState(() {
+      _startingPoints = -301;
+      _endingPoints = 0;
+      _playersList = [];
+      _currentTurn = 0;
+    });
+    _printState();
+  }
+
+  Future<void> _showEndGame() async {
+    print('_showEndGame start');
+    await Future.delayed(Duration(milliseconds: 500));
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Winner winner chicken dinner!'),
+          content: Container(
+            padding: EdgeInsets.all(10),
+            //TODO - modify height
+            height: MediaQuery.of(context).size.height/3,
+            child: Column(
+              children: [
+                Text(_playersList[0].name),
+                Image.asset(
+                  "assets/images/darts-winner-image-1.gif",
+                  height: 125.0,
+                  width: 125.0,
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('New Game'),
+              onPressed: () {
+                _setNewGame();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _checkEndGame(int index) {
+    if (_playersList[index].points == _endingPoints) {
+      print('Should END GAME');
+      _showEndGame();
+    }
+  }
+
   void _addPoints(String playerId, int points) {
     final index = _playersList.indexWhere((element) => element.id == playerId);
     if (index >= 0) {
       _playersList[index].points += points;
       _rankPlayersByPoints();
       _incrementTurn();
+      _checkEndGame(index);
     }
   }
 
