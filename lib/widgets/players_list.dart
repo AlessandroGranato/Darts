@@ -37,7 +37,7 @@ class PlayersList extends StatelessWidget {
                     ),
                     mediaQuery.size.width > 360
                         ? TextButton.icon(
-                            onPressed: () => showThrowDartsFunction(context, playersList[index].id),
+                            onPressed: () => showThrowDartsFunction(context, playersList[index]),
                             icon: Icon(Icons.add),
                             label: Text(
                               'Throw',

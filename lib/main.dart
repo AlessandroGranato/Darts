@@ -1,5 +1,5 @@
 import 'package:darts/widgets/play_current_turn.dart';
-import 'package:darts/widgets/throw_darts.dart';
+import 'package:darts/widgets/show_throw_darts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -63,10 +63,11 @@ class _MyHomePageState extends State<MyHomePage> {
     print(
         'Inserted player ${newPlayer.name} with turn ${newPlayer.playerTurn}');
     _rankPlayersByPoints();
+    _printState();
   }
   
   _MyHomePageState() {
-    _playersList.add(Player('1', 'Mario', _startingPoints, 0));
+    _playersList.add(Player('1', 'Mario', -30, 0));
     _playersList.add(Player('2', 'Luigi', _startingPoints, 1));
   }
 
@@ -77,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
           return GestureDetector(
             child: NewPlayer(
                 addPlayerFunction: addPlayerToList,
-                playerTurn: _playersList.length + 1,
+                playerTurn: _playersList.length,
                 startingPoints: _startingPoints),
             onTap: () {},
             behavior: HitTestBehavior.opaque,
@@ -105,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _decreaseTurn() {
     setState(() {
-      if (_playersList.isEmpty) {
+      if (_playersList.isEmpty || _currentTurn == 0) {
         _currentTurn = 0;
       } else {
         _currentTurn = (_currentTurn - 1) % _playersList.length;
@@ -185,13 +186,13 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void _showThrowDarts(BuildContext ctx, String playerId) {
+  void _showThrowDarts(BuildContext ctx, Player player) {
     showModalBottomSheet(
         context: ctx,
         builder: (_) {
           return GestureDetector(
             child:
-                ThrowDarts(playerId: playerId, addPointsFunction: _addPoints),
+                ShowThrowDarts(player: player, addPointsFunction: _addPoints, endingPoints: _endingPoints),
             onTap: () {},
             behavior: HitTestBehavior.opaque,
           );

@@ -40,7 +40,7 @@ class PlayCurrentTurn extends StatelessWidget {
                       mediaQuery.size.width > 360
                           ? TextButton.icon(
                               onPressed: () => showThrowDartsFunction(
-                                  context, playersList[currentTurn].id),
+                                  context, playersList[currentTurn]),
                               icon: Icon(Icons.add),
                               label: Text(
                                 'Throw',
@@ -53,7 +53,7 @@ class PlayCurrentTurn extends StatelessWidget {
                               icon: Icon(Icons.add),
                               color: Theme.of(context).errorColor,
                               onPressed: () => showThrowDartsFunction(
-                                  context, playersList[currentTurn].id),
+                                  context, playersList[currentTurn]),
                             ),
                       mediaQuery.size.width > 360
                           ? TextButton.icon(
