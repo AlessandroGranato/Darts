@@ -6,8 +6,9 @@ class NewPlayer extends StatefulWidget {
   final int playerTurn;
   final int startingPoints;
   final Function addPlayerFunction;
+  final String playerImageUrl;
   
-  const NewPlayer({Key? key, required this.addPlayerFunction, required this.playerTurn, required this.startingPoints})
+  const NewPlayer({Key? key, required this.addPlayerFunction, required this.playerTurn, required this.startingPoints, required this.playerImageUrl})
       : super(key: key);
 
   @override
@@ -24,7 +25,7 @@ class _NewPlayerState extends State<NewPlayer> {
 
     String playerName = _nameController.text;
     String id = '${playerName}-${DateTime.now().toString()}';
-    Player newPlayer = Player(id, playerName, widget.startingPoints, widget.playerTurn);
+    Player newPlayer = Player(id: id, name: playerName, points:  widget.startingPoints, playerTurn: widget.playerTurn, playerImageUrl: widget.playerImageUrl);
     widget.addPlayerFunction(newPlayer);
     Navigator.of(context).pop();
   }

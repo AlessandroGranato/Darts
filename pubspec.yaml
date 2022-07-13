@@ -61,6 +61,36 @@ flutter:
   assets:
     - assets/images/dart-board.png
     - assets/images/darts-winner-image-1.gif
+    - assets/images/target_icon.png
+    - assets/images/skip_turn_icon.png
+    - assets/images/temp-background.png
+    - assets/images/darts_bg.jpg
+    - assets/images/throw.png
+    - assets/images/skip.png
+    - assets/images/banner.png
+    - assets/images/man_1.png
+    - assets/images/ranks/rank-first.png
+    - assets/images/ranks/rank-second.png
+    - assets/images/ranks/rank-third.png
+    - assets/images/ranks/rank-transparent.png
+    - assets/images/avatars/avatar_1.png
+    - assets/images/avatars/avatar_2.png
+    - assets/images/avatars/avatar_3.png
+    - assets/images/avatars/avatar_4.png
+    - assets/images/avatars/avatar_5.png
+    - assets/images/avatars/avatar_6.png
+    - assets/images/avatars/avatar_7.png
+    - assets/images/avatars/avatar_8.png
+    - assets/images/avatars/avatar_9.png
+    - assets/images/avatars/avatar_10.png
+    - assets/images/avatars/avatar_11.png
+    - assets/images/avatars/avatar_12.png
+    - assets/images/avatars/avatar_13.png
+    - assets/images/avatars/avatar_14.png
+    - assets/images/avatars/avatar_15.png
+    - assets/images/avatars/avatar_16.png
+    - assets/images/avatars/avatar_default.png
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -73,12 +103,12 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+  fonts:
+    - family: OpenSans
+      fonts:
+        - asset: assets/fonts/OpenSans-Regular.ttf
+        - asset: assets/fonts/OpenSans-Bold.ttf
+          weight: 700
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

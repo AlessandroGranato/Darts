@@ -18,64 +18,131 @@ class PlayCurrentTurn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //final int actualTurn = currentTurn == 0 ? 0 :  currentTurn - 1;
+
+    print('PLAY_CURRENT_TURN - currentTurn: ${currentTurn}');
+    for (Player player in playersList) {
+      print('PLAY_CURRENT_TURN - Player: ${player.name} has turn: ${player.playerTurn}');
+    }
+    
     final mediaQuery = MediaQuery.of(context);
-    return Card(
-      elevation: 6,
+    var theme = Theme.of(context);
+    return Container(
       margin: EdgeInsets.all(20),
-      child: Container(
-        padding: EdgeInsets.all(10),
-        child: playersList.isEmpty
-            ? Text('Add players')
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Column(
-                    children: [
-                      Text('It\'s your turn'),
-                      Text('${playersList[currentTurn].name}'),
-                    ],
+      height: double.infinity,
+      width: double.infinity,
+      child: playersList.isEmpty
+          ? Text('Add players')
+          : Column(
+              children: [
+                Flexible(
+                  fit: FlexFit.tight,
+                  child: IntrinsicHeight(
+                    child: Container(
+                      margin: EdgeInsets.only(bottom: 5),
+                      padding: const EdgeInsets.symmetric(horizontal: 40),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Flexible(
+                            fit: FlexFit.tight,
+                            child: InkWell(
+                              onTap: () => showThrowDartsFunction(
+                                  context, playersList[playersList.indexWhere((element) => element.playerTurn == currentTurn)]),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.9),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.4),
+                                      spreadRadius: 2,
+                                      blurRadius: 5,
+                                      offset: Offset(
+                                          0, 1), // changes position of shadow
+                                    ),
+                                  ],
+                                ),
+                                
+                                child: Image.asset(
+                                  'assets/images/throw.png',
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Flexible(
+                            fit: FlexFit.tight,
+                            child: InkWell(
+                              onTap: () => incrementTurnFunction(),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.9),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.4),
+                                      spreadRadius: 2,
+                                      blurRadius: 5,
+                                      offset: Offset(
+                                          0, 1), // changes position of shadow
+                                    ),
+                                  ],
+                                ),
+                                height: double.infinity,
+                                width: double.infinity,
+                                child: Image.asset(
+                                  'assets/images/skip.png',
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                  Column(
-                    children: [
-                      mediaQuery.size.width > 360
-                          ? TextButton.icon(
-                              onPressed: () => showThrowDartsFunction(
-                                  context, playersList[currentTurn]),
-                              icon: Icon(Icons.add),
-                              label: Text(
-                                'Throw',
-                              ),
-                              style: TextButton.styleFrom(
-                                primary: Theme.of(context).errorColor,
-                              ),
-                            )
-                          : IconButton(
-                              icon: Icon(Icons.add),
-                              color: Theme.of(context).errorColor,
-                              onPressed: () => showThrowDartsFunction(
-                                  context, playersList[currentTurn]),
+                ),
+                SizedBox(height: 5),
+                Flexible(
+                  fit: FlexFit.tight,
+                  child: Container(
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                      Image.asset(
+                        "assets/images/banner.png",
+                        fit: BoxFit.cover,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'It\'s your turn',
+                              textAlign: TextAlign.center,
                             ),
-                      mediaQuery.size.width > 360
-                          ? TextButton.icon(
-                              onPressed: () => incrementTurnFunction(),
-                              icon: Icon(Icons.delete),
-                              label: Text(
-                                'Skip Turn',
-                              ),
-                              style: TextButton.styleFrom(
-                                primary: Theme.of(context).errorColor,
-                              ),
+                            Text(
+                              '${playersList[playersList.indexWhere((element) => element.playerTurn == currentTurn)].name.toUpperCase()}',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 25, fontWeight: FontWeight.bold),
                             )
-                          : IconButton(
-                              icon: Icon(Icons.delete),
-                              color: Theme.of(context).errorColor,
-                              onPressed: () => incrementTurnFunction(),
-                            ),
-                    ],
-                  )
-                ],
-              ),
-      ),
+                          ],
+                        ),
+                      ),
+                    ]),
+                  ),
+                ),
+              ],
+            ),
     );
   }
 }

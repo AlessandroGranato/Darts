@@ -2,6 +2,7 @@ import 'package:darts/widgets/play_current_turn.dart';
 import 'package:darts/widgets/show_throw_darts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:math';
 
 import './widgets/players_list.dart';
 import './widgets/new_player.dart';
@@ -23,10 +24,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Darts',
       theme: ThemeData(
+          colorScheme: Theme.of(context).colorScheme.copyWith(
+                primary: Color.fromRGBO(61, 61, 61, 1),
+                secondary: Color.fromRGBO(230, 156, 46, 1),
+                tertiary: Color.fromRGBO(94, 143, 235, 1),
+              ),
+              fontFamily: 'OpenSans',
           textTheme: ThemeData.light().textTheme.copyWith(
                 headline6: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
+                  fontFamily: 'OpenSans'
                 ),
                 button: TextStyle(color: Colors.white),
               ),
@@ -57,6 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _endingPoints = 0;
   List<Player> _playersList = [];
   int _currentTurn = 0;
+  int totPlayerImages = 16;
 
   void addPlayerToList(Player newPlayer) {
     _playersList.add(newPlayer);
@@ -65,10 +74,22 @@ class _MyHomePageState extends State<MyHomePage> {
     _rankPlayersByPoints();
     _printState();
   }
-  
+
   _MyHomePageState() {
-    _playersList.add(Player('1', 'Mario', -30, 0));
-    _playersList.add(Player('2', 'Luigi', _startingPoints, 1));
+    _playersList.add(Player(id: '1', name: 'Mario', points:  -30, playerTurn:  0));
+    _playersList.add(Player(id: '2', name:  'Luigi', points: _startingPoints, playerTurn:  1));
+  }
+
+  String selectPlayerImageUrl() {
+    List<String> selectedImageUrls = [];
+    _playersList.forEach((element) {selectedImageUrls.add(element.playerImageUrl);});
+    
+    String playerImageUrl = "";
+    do {
+      playerImageUrl = 'assets/images/avatars/avatar_${Random().nextInt(totPlayerImages) + 1}.png';  
+    } while (selectedImageUrls.contains(playerImageUrl));
+    print('PlayerImageUrl is: $playerImageUrl');
+    return playerImageUrl;
   }
 
   void _showAddPlayer(BuildContext ctx) {
@@ -79,7 +100,8 @@ class _MyHomePageState extends State<MyHomePage> {
             child: NewPlayer(
                 addPlayerFunction: addPlayerToList,
                 playerTurn: _playersList.length,
-                startingPoints: _startingPoints),
+                startingPoints: _startingPoints, 
+                playerImageUrl: selectPlayerImageUrl()),
             onTap: () {},
             behavior: HitTestBehavior.opaque,
           );
@@ -143,7 +165,7 @@ class _MyHomePageState extends State<MyHomePage> {
           content: Container(
             padding: EdgeInsets.all(10),
             //TODO - modify height
-            height: MediaQuery.of(context).size.height/3,
+            height: MediaQuery.of(context).size.height / 3,
             child: Column(
               children: [
                 Text(_playersList[0].name),
@@ -191,8 +213,10 @@ class _MyHomePageState extends State<MyHomePage> {
         context: ctx,
         builder: (_) {
           return GestureDetector(
-            child:
-                ShowThrowDarts(player: player, addPointsFunction: _addPoints, endingPoints: _endingPoints),
+            child: ShowThrowDarts(
+                player: player,
+                addPointsFunction: _addPoints,
+                endingPoints: _endingPoints),
             onTap: () {},
             behavior: HitTestBehavior.opaque,
           );
@@ -243,33 +267,54 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: appBar,
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            // mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Container(
-                height: (mediaQuery.size.height -
-                        appBar.preferredSize.height -
-                        mediaQuery.padding.top) *
-                    0.3,
-                child: PlayCurrentTurn(
-                    playersList: _playersList,
-                    showThrowDartsFunction: _showThrowDarts,
-                    currentTurn: _currentTurn,
-                    incrementTurnFunction: _incrementTurn),
-              ),
-              Container(
-                height: (mediaQuery.size.height -
-                        appBar.preferredSize.height -
-                        mediaQuery.padding.top) *
-                    0.7,
-                child: PlayersList(
-                  playersList: _playersList,
-                  showThrowDartsFunction: _showThrowDarts,
-                  deletePlayerFunction: _deletePlayer,
+          child: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                colorFilter: ColorFilter.mode(
+                    Colors.black.withOpacity(0.8), BlendMode.dstATop),
+                image: const AssetImage(
+                  "assets/images/darts_bg.jpg",
                 ),
               ),
-            ],
+            ),
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.start,
+              
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(top: 10),
+                  height: (mediaQuery.size.height -
+                          appBar.preferredSize.height -
+                          mediaQuery.padding.top) *
+                      0.07,
+                  child: Text('Freccette da Matteo', style: TextStyle(fontSize: 30, color: Colors.white, fontFamily: 'OpenSans'), textAlign: TextAlign.center,)
+                ),
+                Container(
+                  height: (mediaQuery.size.height -
+                          appBar.preferredSize.height -
+                          mediaQuery.padding.top) *
+                      0.35,
+                  child: PlayCurrentTurn(
+                      playersList: _playersList,
+                      showThrowDartsFunction: _showThrowDarts,
+                      currentTurn: _currentTurn,
+                      incrementTurnFunction: _incrementTurn),
+                ),
+                Container(
+                  height: (mediaQuery.size.height -
+                          appBar.preferredSize.height -
+                          mediaQuery.padding.top) *
+                      0.58,
+                  child: PlayersList(
+                    playersList: _playersList,
+                    showThrowDartsFunction: _showThrowDarts,
+                    deletePlayerFunction: _deletePlayer,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -1,10 +1,11 @@
 class Player {
   final String id;
-  String name;
+  final String name;
   int points;
   int playerTurn;
+  String playerImageUrl;
 
-  Player(this.id, this.name, this.points, this.playerTurn);
+  Player({required this.id, required this.name, required this.points, required this.playerTurn, this.playerImageUrl = 'assets/images/avatars/avatar_default.png'});
 
   
 }
