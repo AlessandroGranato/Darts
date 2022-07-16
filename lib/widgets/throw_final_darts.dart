@@ -69,11 +69,20 @@ class _ThrowFinalDartsState extends State<ThrowFinalDarts> {
     if (_pointsController.text.isEmpty) {
       return;
     }
+
     int points = int.parse(_pointsController.text);
+
+    print('points :${points}');
+    print('cumulativePoints :${_throwsCumulativePoints}');
+    print('missingPoints :${_getMissingPoints}');
+
     if (points > _getMissingPoints || (_getMissingPoints - points == 1)) {
       widget.addPointsFunction(widget.player.id, _throwsCumulativePoints);
       Navigator.of(context).pop();
       return;
+    }
+    if (points == _getMissingPoints) {
+      _instantVictory();
     }
 
     setState(() {
@@ -109,68 +118,255 @@ class _ThrowFinalDartsState extends State<ThrowFinalDarts> {
           bottom: mediaQuery.viewInsets.bottom + 10,
         ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
             Container(
               width: MediaQuery.of(context).size.width,
-              child: Text('Final Throws, attempt n.${_throwNumber}',
+              child: Text('Final Throws!'.toUpperCase(),
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headline6),
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey.shade700,
+                      fontFamily: 'OpenSans')),
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(
-                  child: Text(
-                      'To win, you must score ${_getMissingPoints} points'),
-                ),
-                Expanded(
-                  child: Text(
-                    _canBeLastThrow
-                        ? 'by hitting DOUBLE ${_getMissingPoints / 2}'
-                        : 'but you can\'t with this throw',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
+                Text('Attempt '.toUpperCase(),
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'OpenSans')),
+                Text(
+                  '#${_throwNumber}',
+                  style: TextStyle(
+                      fontSize: 25,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'OpenSans'),
+                )
               ],
             ),
+            SizedBox(height: 20),
             Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                if (_canBeLastThrow)
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        primary: Theme.of(context).colorScheme.primary,
-                        onPrimary: Theme.of(context).textTheme.button?.color),
-                    onPressed: _instantVictory,
-                    child: const Text('I WON!'),
-                  ),
-                Expanded(
-                  child: Text('I scored'),
+                _canBeLastThrow
+                    ? SizedBox(width: MediaQuery.of(context).size.width * 0.15)
+                    : SizedBox(width: MediaQuery.of(context).size.width * 0.15),
+                Image.asset(
+                  'assets/images/hint.png',
                 ),
-                Expanded(
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      border: UnderlineInputBorder(),
-                      labelText: 'points',
+                SizedBox(width: 10),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      child: _canBeLastThrow
+                          ? Text(
+                              'You could win by scoring:',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 15, fontFamily: 'OpenSans'),
+                            )
+                          : Text(
+                              '${_getMissingPoints}pts left',
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'OpenSans'),
+                            ),
                     ),
-                    controller: _pointsController,
-                    keyboardType: TextInputType.number,
-                    onFieldSubmitted: (_) => _checkThrow(),
-                  ),
-                ),
-                TextButton(
-                  child: const Text('X2'),
-                  onPressed: () => _multiplyDartShot(_pointsController, 2),
-                ),
-                TextButton(
-                  child: const Text('X3'),
-                  onPressed: () => _multiplyDartShot(_pointsController, 3),
-                ),
-                IconButton(
-                  icon: Icon(Icons.check_box),
-                  onPressed: _checkThrow,
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.ideographic,
+                      children: _canBeLastThrow
+                          ? [
+                              Text(
+                                '${_getMissingPoints}pts',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'OpenSans',
+                                ),
+                              ),
+                              Text(' with ',
+                                  style: TextStyle(
+                                      fontSize: 15, fontFamily: 'OpenSans')),
+                              Text(
+                                '${(_getMissingPoints / 2).toInt()}x2',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'OpenSans',
+                                ),
+                              ),
+                            ]
+                          : [
+                              Text(
+                                'You can\'t win with this throw.',
+                                style: TextStyle(
+                                    fontSize: 15, fontFamily: 'OpenSans'),
+                              ),
+                            ],
+                    ),
+                  ],
                 ),
               ],
             ),
+            SizedBox(height: 10),
+            _canBeLastThrow
+                ? SizedBox(
+                    height: 0,
+                  )
+                : Text(
+                    '*Last Throw must be a double',
+                    style: TextStyle(fontSize: 12, fontFamily: 'OpenSans'),
+                  ),
+            SizedBox(
+              height: 30,
+            ),
+            Text(
+              'Insert Score',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'OpenSans',
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+height: MediaQuery.of(context).size.height * 0.08,
+              child: IntrinsicHeight(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Flexible(
+                      flex: 2,
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                            border: UnderlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            filled: true,
+                            hintStyle: TextStyle(color: Colors.grey[800]),
+                            labelText: 'Points',
+                            fillColor: Colors.grey.shade200),
+                        style: TextStyle(
+                            fontSize: 10.0, height: 1, color: Colors.black),
+                        controller: _pointsController,
+                        keyboardType: TextInputType.number,
+                        onFieldSubmitted: (_) => _checkThrow(),
+                      ),
+                    ),
+                    SizedBox(width: 10,),
+                    Flexible(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Color.fromRGBO(223, 229, 17, 1),
+                          onPrimary: Colors.black,
+                          shape: const RoundedRectangleBorder(
+                            
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                        ),
+                        onPressed: () =>
+                            _multiplyDartShot(_pointsController, 2),
+                        child: Text(
+                          'x2',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'OpenSans',
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10,),
+                    Flexible(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Color.fromRGBO(223, 229, 17, 1),
+                          onPrimary: Colors.black,
+                          shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                        ),
+                        onPressed: () =>
+                            _multiplyDartShot(_pointsController, 3),
+                        child: Text(
+                          'x3',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'OpenSans',
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 10,),
+                    Flexible(
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: Color.fromRGBO(223, 229, 17, 1),
+                            onPrimary: Colors.black,
+                            fixedSize: Size(10, 10),
+                            shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(50))),
+                          ),
+                          onPressed:
+                              _checkThrow, //onPressed is empty because its child is an icon with onPressed. I could have also added _checkThrow here tho.
+                          child: GestureDetector(
+                            child: Image.asset(
+                              'assets/images/check.png',
+                              width: 15,
+                            ),
+                            onTap: _checkThrow,
+                          )
+
+                          //child: Text('yoasda'),
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            if (_canBeLastThrow)
+              Text(
+                'or',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'OpenSans',
+                ),
+              ),
+            if (_canBeLastThrow)
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Color.fromRGBO(223, 229, 17, 1),
+                  onPrimary: Colors.black,
+                  textStyle: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'OpenSans',
+                      fontSize: 20),
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(50))),
+                ),
+                onPressed: _instantVictory,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: const Text('I WON!'),
+                ),
+              ),
           ],
         ),
       ),

@@ -29,13 +29,12 @@ class MyApp extends StatelessWidget {
                 secondary: Color.fromRGBO(230, 156, 46, 1),
                 tertiary: Color.fromRGBO(94, 143, 235, 1),
               ),
-              fontFamily: 'OpenSans',
+          fontFamily: 'OpenSans',
           textTheme: ThemeData.light().textTheme.copyWith(
                 headline6: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'OpenSans'
-                ),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'OpenSans'),
                 button: TextStyle(color: Colors.white),
               ),
           appBarTheme: AppBarTheme(
@@ -76,17 +75,22 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _MyHomePageState() {
-    _playersList.add(Player(id: '1', name: 'Mario', points:  -30, playerTurn:  0));
-    _playersList.add(Player(id: '2', name:  'Luigi', points: _startingPoints, playerTurn:  1));
+    _playersList
+        .add(Player(id: '1', name: 'Alessandro', points: -30, playerTurn: 0));
+    _playersList.add(
+        Player(id: '2', name: 'Luigi', points: _startingPoints, playerTurn: 1));
   }
 
   String selectPlayerImageUrl() {
     List<String> selectedImageUrls = [];
-    _playersList.forEach((element) {selectedImageUrls.add(element.playerImageUrl);});
-    
+    _playersList.forEach((element) {
+      selectedImageUrls.add(element.playerImageUrl);
+    });
+
     String playerImageUrl = "";
     do {
-      playerImageUrl = 'assets/images/avatars/avatar_${Random().nextInt(totPlayerImages) + 1}.png';  
+      playerImageUrl =
+          'assets/images/avatars/avatar_${Random().nextInt(totPlayerImages) + 1}.png';
     } while (selectedImageUrls.contains(playerImageUrl));
     print('PlayerImageUrl is: $playerImageUrl');
     return playerImageUrl;
@@ -100,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: NewPlayer(
                 addPlayerFunction: addPlayerToList,
                 playerTurn: _playersList.length,
-                startingPoints: _startingPoints, 
+                startingPoints: _startingPoints,
                 playerImageUrl: selectPlayerImageUrl()),
             onTap: () {},
             behavior: HitTestBehavior.opaque,
@@ -168,11 +172,15 @@ class _MyHomePageState extends State<MyHomePage> {
             height: MediaQuery.of(context).size.height / 3,
             child: Column(
               children: [
-                Text(_playersList[0].name),
+                Text(_playersList[0].name, style: TextStyle(
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'OpenSans',
+              ),),
                 Image.asset(
-                  "assets/images/darts-winner-image-1.gif",
-                  height: 125.0,
-                  width: 125.0,
+                  "assets/images/darts-winner-image-2.png",
+                  fit: BoxFit.fill,
+                  height: 200,
                 ),
               ],
             ),
@@ -210,16 +218,26 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _showThrowDarts(BuildContext ctx, Player player) {
     showModalBottomSheet(
-        context: ctx,
-        builder: (_) {
-          return GestureDetector(
-            child: ShowThrowDarts(
-                player: player,
-                addPointsFunction: _addPoints,
-                endingPoints: _endingPoints),
-            onTap: () {},
-            behavior: HitTestBehavior.opaque,
-          );
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        context: context,
+        isScrollControlled: true,
+        builder: (BuildContext context) {
+          return SingleChildScrollView(
+              child: Container(
+            height: MediaQuery.of(context).size.height * 0.7,
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: GestureDetector(
+              child: ShowThrowDarts(
+                  player: player,
+                  addPointsFunction: _addPoints,
+                  endingPoints: _endingPoints),
+              onTap: () {},
+              behavior: HitTestBehavior.opaque,
+            ),
+          ));
         });
   }
 
@@ -280,17 +298,26 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             child: Column(
               // mainAxisAlignment: MainAxisAlignment.start,
-              
+
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.only(top: 10),
-                  height: (mediaQuery.size.height -
-                          appBar.preferredSize.height -
-                          mediaQuery.padding.top) *
-                      0.07,
-                  child: Text('Freccette da Matteo', style: TextStyle(fontSize: 30, color: Colors.white, fontFamily: 'OpenSans'), textAlign: TextAlign.center,)
-                ),
+                    padding: EdgeInsets.only(top: 10, left: 30, right: 30),
+                    height: (mediaQuery.size.height -
+                            appBar.preferredSize.height -
+                            mediaQuery.padding.top) *
+                        0.07,
+                    child: 
+                    Image.asset('assets/images/title.png', fit: BoxFit.contain)
+                    // Text(
+                    //   'Freccette da Matteo',
+                    //   style: TextStyle(
+                    //       fontSize: 30,
+                    //       color: Colors.white,
+                    //       fontFamily: 'OpenSans'),
+                    //   textAlign: TextAlign.center,
+                    // ),
+                    ),
                 Container(
                   height: (mediaQuery.size.height -
                           appBar.preferredSize.height -
@@ -309,6 +336,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       0.58,
                   child: PlayersList(
                     playersList: _playersList,
+                    currentTurn: _currentTurn,
                     showThrowDartsFunction: _showThrowDarts,
                     deletePlayerFunction: _deletePlayer,
                   ),

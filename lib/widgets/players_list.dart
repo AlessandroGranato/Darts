@@ -5,12 +5,14 @@ import '../models/player.dart';
 
 class PlayersList extends StatelessWidget {
   final List<Player> playersList;
+  int currentTurn;
   final Function showThrowDartsFunction;
   final Function deletePlayerFunction;
 
   PlayersList(
       {Key? key,
       required this.playersList,
+      required this.currentTurn,
       required this.showThrowDartsFunction,
       required this.deletePlayerFunction})
       : super(key: key);
@@ -31,9 +33,25 @@ class PlayersList extends StatelessWidget {
                     borderRadius: BorderRadius.circular(3.0),
                   ),
                   elevation: 5,
-                  //color: (index == 0) ? Color.fromRGBO(255, 215, 0, 0.9): (index == 1) ? Color.fromRGBO(192, 192, 192, 0.9) : null,
-                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 40),
-                  child: Padding(
+                  margin: playersList[index].playerTurn == currentTurn
+                      ? EdgeInsets.symmetric(vertical: 6, horizontal: 30)
+                      : EdgeInsets.symmetric(vertical: 8, horizontal: 40),
+
+                  child: Container(
+                    decoration: playersList[index].playerTurn == currentTurn
+                        ? BoxDecoration(
+                            color: Colors.white.withOpacity(1),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color.fromRGBO(223, 229, 17, 1).withOpacity(0.3),
+                                spreadRadius: 5,
+                                blurRadius: 10,
+                                offset:
+                                    Offset(0, 1), // changes position of shadow
+                              ),
+                            ],
+                          )
+                        : null,
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     child: Row(
@@ -45,8 +63,9 @@ class PlayersList extends StatelessWidget {
                         Expanded(
                             flex: 3,
                             child: Badge(
-                              key: ValueKey(playersList[index].id),
-                                playerImageUrl: playersList[index].playerImageUrl,
+                                key: ValueKey(playersList[index].id),
+                                playerImageUrl:
+                                    playersList[index].playerImageUrl,
                                 playerRank: index,
                                 color: Colors.red)),
                         SizedBox(
