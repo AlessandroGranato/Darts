@@ -22,7 +22,13 @@ class PlayersList extends StatelessWidget {
     final mediaQuery = MediaQuery.of(context);
 
     return playersList.isEmpty
-        ? Text('Add players')
+        ? Container(
+          padding: EdgeInsets.all(20),
+          child: Image.asset('assets/images/start-game-text.png',
+        alignment: Alignment.topCenter,
+        fit: BoxFit.contain,
+        
+        ),)
         : ListView.builder(
             itemCount: playersList.length,
             itemBuilder: (context, index) {

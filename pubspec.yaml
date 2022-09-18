@@ -29,6 +29,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  just_audio: ^0.9.13
+    
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -95,7 +97,11 @@ flutter:
     - assets/images/avatars/avatar_15.png
     - assets/images/avatars/avatar_16.png
     - assets/images/avatars/avatar_default.png
-
+    - assets/audios/test-audio.mp3
+    - assets/audios/audio-winner-1.ogg
+    - assets/audios/audio-winner-2.wav
+    - assets/images/start-game-image.png
+    - assets/images/start-game-text.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

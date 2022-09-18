@@ -31,7 +31,7 @@ class PlayCurrentTurn extends StatelessWidget {
       height: double.infinity,
       width: double.infinity,
       child: playersList.isEmpty
-          ? Text('Add players')
+          ? Text('')
           : Column(
               children: [
                 Flexible(

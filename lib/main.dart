@@ -1,3 +1,5 @@
+import 'package:just_audio/just_audio.dart';
+
 import 'package:darts/widgets/play_current_turn.dart';
 import 'package:darts/widgets/show_throw_darts.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +20,7 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +63,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late AudioPlayer player;
+  
+@override
+void initState() {
+  super.initState();
+  player = AudioPlayer();
+}
+@override
+void dispose() {
+  player.dispose();
+  super.dispose();
+}
+
+
   int _startingPoints = -301;
   int _endingPoints = 0;
   List<Player> _playersList = [];
@@ -75,10 +92,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   _MyHomePageState() {
-    _playersList
-        .add(Player(id: '1', name: 'Alessandro', points: -30, playerTurn: 0));
-    _playersList.add(
-        Player(id: '2', name: 'Luigi', points: _startingPoints, playerTurn: 1));
+    // _playersList
+    //     .add(Player(id: '1', name: 'Alessandro', points: -30, playerTurn: 0));
+    // _playersList.add(
+    //     Player(id: '2', name: 'Luigi', points: _startingPoints, playerTurn: 1));
   }
 
   String selectPlayerImageUrl() {
@@ -172,11 +189,14 @@ class _MyHomePageState extends State<MyHomePage> {
             height: MediaQuery.of(context).size.height / 3,
             child: Column(
               children: [
-                Text(_playersList[0].name, style: TextStyle(
-                fontSize: 40,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'OpenSans',
-              ),),
+                Text(
+                  _playersList[0].name,
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'OpenSans',
+                  ),
+                ),
                 Image.asset(
                   "assets/images/darts-winner-image-2.png",
                   fit: BoxFit.fill,
@@ -199,9 +219,16 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  void _playEndGameAudio() async  {
+  await player.setAsset('assets/audios/audio-winner-2.wav');
+  player.play();
+
+  }
+
   void _checkEndGame(int index) {
     if (_playersList[index].points == _endingPoints) {
       print('Should END GAME');
+      _playEndGameAudio();
       _showEndGame();
     }
   }
@@ -307,8 +334,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             appBar.preferredSize.height -
                             mediaQuery.padding.top) *
                         0.07,
-                    child: 
-                    Image.asset('assets/images/title.png', fit: BoxFit.contain)
+                    child: Image.asset('assets/images/title.png',
+                        fit: BoxFit.contain)
                     // Text(
                     //   'Freccette da Matteo',
                     //   style: TextStyle(
