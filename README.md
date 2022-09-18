@@ -1,16 +1,16 @@
-# darts
+# Darts
 
-A new Flutter project.
+A Flutter project that allow you and your friends to keep track of points while playing real life darts games!
 
-## Getting Started
+# About the app
 
-This project is a starting point for a Flutter application.
+The app allows a group of people to keep track of points while playing real life darts games by providing the following features:
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Create players (a funny and random avatar will be assigned to each player).
+- Show the players' rank, automatically change order if someone goes ahead.
+- Help players managing their turn:
+    - Every turn a player can keep track of the points made when throwing the darts by pressing the THROW button. He can also multiply the points directly from the app without calculating in mind (x2 or x3) and automatically add them to his previous points.
+    - A player can skip his turn by pressing the SKIP button if, for whatever reason, he needs to skip it.
+- If a player can finish the game with the next throw, a special menu will pop up advising him what to do for winning and allowing him to press "I won" if he does.
+- When a player wins the game, the app will show a victory page and a victory sound will be played.
+- When a game ends, a new one can be made.
